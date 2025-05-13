@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QCM Marketing Stratégique</title>
+  <style>
+    
+    .signature {
+      text-align: center;
+      font-family: "Times New Roman", Times, serif;
+      text-decoration: underline;
+    }
+
+    .validi {
+      text-align: center;
+      font-family: "Times New Roman", Times, serif;
+      font-weight: 900;
+    }
+
+    /* Base Styles */
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 1rem;
+      margin: 0 auto;
+      max-width: 100%;
+      line-height: 1.6;
+    }
+    
+    h1 {
+      color: #2c3e50;
+      text-align: center;
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    /* Questions */
+    .question-container {
+      display: none;
+    }
+    
+    .question-container.active {
+      display: block;
+    }
+    
+    .question {
+      background: white;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .question h3 {
+      margin-top: 0;
+      margin-bottom: 0.8rem;
+      color: #2c3e50;
+      font-size: 1.1rem;
+    }
+    
+    label {
+      display: block;
+      padding: 0.8rem;
+      margin: 0.3rem 0;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+    }
+    
+    label:hover {
+      background-color: #f8f9fa;
+    }
+    
+    /* Buttons */
+    button {
+      padding: 0.8rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    #submit-btn {
+      background: #2ecc71;
+      color: white;
+      width: 100%;
+      margin: 1rem 0 0.5rem 0;
+    }
+    
+    #submit-btn:hover {
+      background: #27ae60;
+    }
+    
+    .nav-buttons {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    #prev-btn, #next-btn {
+      flex: 1;
+      background: #3498db;
+      color: white;
+    }
+    
+    #prev-btn:hover, #next-btn:hover {
+      background: #2980b9;
+    }
+    
+    #share-btn {
+      background: #9b59b6;
+      color: white;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+    
+    #share-btn:hover {
+      background: #8e44ad;
+    }
+    
+    /* Pagination */
+    .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    margin: 1rem auto;
+    overflow-x: auto;
+    width: fit-content;
+    max-width: 100%;
+    }
+    
+    .page-btn {
+      padding: 0.6rem 1rem;
+      min-width: 40px;
+      background: #e0e0e0;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      text-align: center;
+    }
+    
+    .page-btn.active {
+      background: #3498db;
+      color: white;
+    }
+    
+    /* Results */
+    #result {
+      text-align: center;
+      font-weight: bold;
+      margin: 1rem 0;
+      padding: 1rem;
+      background: white;
+      border-radius: 8px;
+    }
+    
+    /* Progress bar */
+    .progress-container {
+      width: 100%;
+      background-color: #e9ecef;
+      border-radius: 5px;
+      margin-bottom: 1rem;
+      
+    }
+    
+    .progress-bar {
+      height: 10px;
+      background-color: #3498db;
+      border-radius: 5px;
+      width: 0%;
+      transition: width 0.5s;
+    }
+    
+    /* Feedback colors */
+    .correct {
+      background-color: #d4edda;
+      border-left: 3px solid #28a745;
+    }
+    
+    .incorrect {
+      background-color: #f8d7da;
+      border-left: 3px solid #dc3545;
+    }
+    
+    .missing {
+      background-color: #fff3cd;
+      border-left: 3px solid #ffc107;
+    }
+  </style>
+</head>
+<body>
+  <h1>QCM - Marketing Stratégique</h1>
+  <h3 class="signature">Made by Ali</h3>
+  
+  <div class="progress-container">
+    <div class="progress-bar" id="progress-bar"></div>
+  </div>
+
+  <!-- Horizontal page buttons -->
+  <div class="pagination" id="pagination"></div>
+
+  <!-- Questions container -->
+  <form id="qcm-form">
+    <div id="questions-container"></div>
+    
+    <!-- Action buttons in new order -->
+    <button type="button" id="submit-btn">Corriger cette page</button>
+    
+    <div class="nav-buttons">
+      <button type="button" id="prev-btn">← Précédent</button>
+      <button type="button" id="next-btn">Suivant →</button>
+    </div>
+    
+    <button type="button" id="share-btn">📤 Partager ce QCM</button>
+    
+    <p id="result"></p>
+  </form>
+
+  <script>
+    // Toutes les questions avec leurs réponses correctes
+    const allQuestions = [
+      {
+        question: "1. Le marketing stratégique s'intéresse à :",
+        answers: [
+          { text: "A. La conception des produits", correct: false },
+          { text: "B. Le contrôle des réalisations", correct: false },
+          { text: "C. Les orientations générales de l'entreprise", correct: true },
+          { text: "D. La promotion des produits", correct: false }
+        ]
+      },
+      {
+        question: "2. Le marketing stratégique consiste à :",
+        answers: [
+          { text: "A. Déterminer le mix marketing", correct: false },
+          { text: "B. Déterminer la cible de l'entreprise", correct: true },
+          { text: "C. Choisir le positionnement de l'entreprise", correct: true }
+        ]
+      },
+      {
+        question: "3. Le marketing stratégique représente :",
+        answers: [
+          { text: "A. La phase la plus importante de la démarche marketing", correct: false },
+          { text: "B. La phase du contrôle des réalisations", correct: false },
+          { text: "C. Les orientations générales de l'entreprise", correct: true }
+        ]
+      },
+      {
+        question: "4. Le marketing stratégique est :",
+        answers: [
+          { text: "A. L'étape primordiale de la démarche marketing", correct: false },
+          { text: "B. L'étape des réalisations", correct: false },
+          { text: "C. La phase de prise de décisions", correct: true },
+          { text: "D. La phase de mise en œuvre des décisions", correct: false }
+        ]
+      },
+      {
+        question: "5. Le marketing stratégique et opérationnel sont :",
+        answers: [
+          { text: "A. Obligatoires pour dominer le marché", correct: true },
+          { text: "B. Deux démarches complémentaires", correct: true },
+          { text: "C. Nécessaires pour vaincre la concurrence", correct: true },
+          { text: "D. La base du plan d'action d'une entreprise", correct: false }
+        ]
+      },
+      {
+        question: "6. La première étape de la démarche du marketing stratégique est :",
+        answers: [
+          { text: "A. Le choix des stratégies", correct: false },
+          { text: "B. Le positionnement", correct: false },
+          { text: "C. La segmentation", correct: true }
+        ]
+      },
+      {
+        question: "7. La dernière étape de la démarche du marketing stratégique est :",
+        answers: [
+          { text: "A. Le ciblage", correct: false },
+          { text: "B. Le positionnement", correct: true },
+          { text: "C. Choix des stratégies", correct: false }
+        ]
+      },
+      {
+        question: "8. Les piliers de la démarche du marketing stratégique sont :",
+        answers: [
+          { text: "A. La segmentation, le ciblage et le Positionnement", correct: true },
+          { text: "B. Le diagnostic interne, externe et environnemental", correct: false },
+          { text: "C. La planification, la segmentation et la conception", correct: false },
+          { text: "D. Autre", correct: false }
+        ]
+      },
+      {
+        question: "9. Le processus de gestion stratégique nécessite la définition :",
+        answers: [
+          { text: "A. Des facteurs clés de succès", correct: true },
+          { text: "B. Des objectifs de l'entreprise", correct: true },
+          { text: "C. Des Domaines d'Activités Stratégiques", correct: true }
+        ]
+      },
+      {
+        question: "10. La capacité stratégique de l'entreprise est déterminée à partir du :",
+        answers: [
+          { text: "A. Diagnostic interne", correct: true },
+          { text: "B. Diagnostic externe", correct: false },
+          { text: "C. Diagnostic interne et interne", correct: false }
+        ]
+      },
+      {
+        question: "11. La stratégie a connu plusieurs définitions; Néanmoins, toutes les définitions s'accordent sur certains éléments de base. Il s'agit de :",
+        answers: [
+          { text: "A. La détermination des atouts de l'entreprise", correct: false },
+          { text: "B. La détermination de ses objectifs", correct: true },
+          { text: "C. L'allocation des ressources nécessaires", correct: true }
+        ]
+      },
+      {
+        question: "12. La démarche SCP qui constitue le cœur du marketing stratégique signifie :",
+        answers: [
+          { text: "A. Structure, Comportement, Positionnement", correct: false },
+          { text: "B. Segmentation, Ciblage, Positionnement", correct: true },
+          { text: "C. Secteur, Client, Promotion", correct: false },
+          { text: "D. Stratégie, Ciblage, Performance", correct: false }
+        ]
+      },
+      {
+        question: "13. La segmentation stratégique consiste à identifier :",
+        answers: [
+          { text: "A. Les Domaines d'Activités Stratégiques (DAS)", correct: true },
+          { text: "B. Les segments du marché", correct: false },
+          { text: "C. Les concurrents", correct: false },
+          { text: "D. La chaine de valeur", correct: false }
+        ]
+      },
+      {
+        question: "14. La segmentation marketing subdivise le marché selon :",
+        answers: [
+          { text: "A. Les facteurs clés de succès", correct: false },
+          { text: "B. Les Domaines d'Activités Stratégiques", correct: false },
+          { text: "C. Les critères sociodémographiques", correct: true },
+          { text: "D. Les critères socioculturelles", correct: true }
+        ]
+      },
+      {
+        question: "15. Parmi les bases de la segmentation stratégique, on trouve :",
+        answers: [
+          { text: "A. Le nombre des Domaines d'Activités Stratégiques", correct: true },
+          { text: "B. Le nombre des concurrents", correct: false },
+          { text: "C. Les modes de distribution possibles", correct: false },
+          { text: "D. Autre", correct: false }
+        ]
+      },
+      {
+        question: "16. Les bases de la segmentation stratégique sont :",
+        answers: [
+          { text: "A. Les Facteurs clés de succès (FCS)", correct: true },
+          { text: "B. Les missions de l'entreprise", correct: false },
+          { text: "C. Les orientations du marché", correct: false }
+        ]
+      },
+      {
+        question: "17. Les critères internes de la segmentation stratégique sont liés à l'existence de :",
+        answers: [
+          { text: "A. Même technologies", correct: true },
+          { text: "B. Même concurrents", correct: false },
+          { text: "C. Même clients", correct: false }
+        ]
+      },
+      {
+        question: "18. Pour l'entreprise, la segmentation stratégique a pour objectif de :",
+        answers: [
+          { text: "A. Diviser son marché", correct: false },
+          { text: "B. Constituer un portefeuille d'activités", correct: true },
+          { text: "C. Déterminer des DAS", correct: true }
+        ]
+      },
+      {
+        question: "19. La stratégie de ciblage indifférencié consiste à :",
+        answers: [
+          { text: "A. Offrir des produits standardisés", correct: true },
+          { text: "B. Offrir une large gamme de produits", correct: false },
+          { text: "C. Réaliser des économies d'échelle", correct: true },
+          { text: "D. Développer la spécialisation", correct: false }
+        ]
+      },
+      {
+        question: "20. Pour le ciblage, les entreprises utilisent le modèle des 3C qui signifie :",
+        answers: [
+          { text: "A. client, comportement, ciblage", correct: false },
+          { text: "B. Consommateur, ciblage, stratégie", correct: false },
+          { text: "C. Ciblage, confort, Conduite", correct: false },
+          { text: "D. Client, concurrent, entreprise", correct: true }
+        ]
+      },
+      {
+        question: "21. La politique du ciblage consiste à :",
+        answers: [
+          { text: "A. Etudier les marchés cibles", correct: false },
+          { text: "B. Choisir les marchés cibles", correct: true },
+          { text: "C. Découper les marchés cibles", correct: false },
+          { text: "D. Analyser les marchés cibles", correct: false }
+        ]
+      },
+      {
+        question: "22. La stratégie du ciblage repose sur :",
+        answers: [
+          { text: "A. L'évaluation de l'attractivité de segments", correct: true },
+          { text: "B. Détermination des attentes des clients", correct: false },
+          { text: "C. Identification des besoins", correct: false }
+        ]
+      },
+      {
+        question: "23. La stratégie de ciblage indifférencié est :",
+        answers: [
+          { text: "A. La stratégie dominante sur le marché", correct: true },
+          { text: "B. La stratégie la plus rare", correct: false },
+          { text: "C. Celle qui permet la diversification", correct: false },
+          { text: "D. Celle qui permet de développer la spécialisation", correct: false }
+        ]
+      },
+      {
+        question: "24. La stratégie de ciblage indifférencié est :",
+        answers: [
+          { text: "A. La stratégie la plus fréquente", correct: true },
+          { text: "B. La stratégie la plus rare", correct: false },
+          { text: "C. La plus difficile", correct: false }
+        ]
+      },
+      {
+        question: "25. Le mapping sert à :",
+        answers: [
+          { text: "A. Effectuer le ciblage pour l'entreprise", correct: false },
+          { text: "B. Promouvoir la marque d'une entreprise", correct: false },
+          { text: "C. Mesurer le positionnement de la marque", correct: true },
+          { text: "D. Identifier les concurrents directs", correct: false }
+        ]
+      },
+      {
+        question: "26. Le positionnement se base sur :",
+        answers: [
+          { text: "A. La différenciation", correct: true },
+          { text: "B. La perception des clients", correct: false },
+          { text: "C. L'image de l'entreprise", correct: false }
+        ]
+      },
+      {
+        question: "27. Pour une entreprise, le positionnement vise à :",
+        answers: [
+          { text: "A. Créer l'image sur le marché", correct: true },
+          { text: "B. Développer la notoriété", correct: false },
+          { text: "C. Déterminer la position concurrentielle", correct: false },
+          { text: "D. Déterminer la part de marché", correct: false }
+        ]
+      },
+      {
+        question: "28. Le triangle d'or du positionnement permet à l'entreprise de :",
+        answers: [
+          { text: "A. Orienter le choix du positionnement de son produit", correct: true },
+          { text: "B. Identifier les avantages compétitifs de l'entreprise", correct: false },
+          { text: "C. Identifier les concurrents", correct: false }
+        ]
+      },
+      {
+        question: "29. Le triangle d'or du positionnement est composé de (chercher l'intrus) :",
+        answers: [
+          { text: "A. Le produit", correct: false },
+          { text: "B. Le marché", correct: false },
+          { text: "C. La marque", correct: true },
+          { text: "D. La concurrence", correct: false }
+        ]
+      },
+      {
+        question: "30. La détermination du positionnement pour entreprise se base sur :",
+        answers: [
+          { text: "A. La qualité du produit", correct: false },
+          { text: "B. La structure concurrentielle du marché", correct: false },
+          { text: "C. L'image de la marque", correct: false },
+          { text: "D. La distinction de la concurrence", correct: true }
+        ]
+      },
+      {
+        question: "31. La matrice McKinsey est établie à partir des dimensions suivantes :",
+        answers: [
+          { text: "A. Taux de croissance et la part de marché", correct: false },
+          { text: "B. La compétitivité de l'entreprise et la croissance du marché", correct: false },
+          { text: "C. Attrait du marché et la position concurrentielle", correct: true }
+        ]
+      },
+      {
+        question: "32. Dans la matrice McKinsey, la position concurrentielle est déterminée par :",
+        answers: [
+          { text: "A. La part de marché relative", correct: false },
+          { text: "B. La rentabilité du marché", correct: false },
+          { text: "C. Les facteurs clés de succès et les compétences de l'entreprise", correct: true },
+          { text: "D. Les facteurs clés de succès de l'entreprise", correct: false }
+        ]
+      },
+      {
+        question: "33. Dans la matrice BCG, les produits vaches à lait sont :",
+        answers: [
+          { text: "A. Les activités les plus rentables", correct: true },
+          { text: "B. Les DAS où le marché est en croissance moyenne", correct: false },
+          { text: "C. Les activités qui exigent des lourds investissements", correct: false },
+          { text: "D. Les activités où la part de marché relative est faible", correct: false }
+        ]
+      },
+      {
+        question: "34. Dans la matrice BCG, les produits dilemmes sont :",
+        answers: [
+          { text: "A. Les activités les plus rentables", correct: false },
+          { text: "B. Les DAS où le marché est en croissance moyenne", correct: false },
+          { text: "C. Les activités qui exigent des lourds investissements", correct: true },
+          { text: "D. Les activités où la part de marché relative est faible", correct: true }
+        ]
+      },
+      {
+        question: "35. Dans la matrice BCG, les activités vache à lait sont :",
+        answers: [
+          { text: "A. Les activités les plus rentables", correct: true },
+          { text: "B. Les DAS qui génèrent plus de liquidités", correct: true },
+          { text: "C. Les activités qui exigent des lourds investissements", correct: false }
+        ]
+      },
+      {
+        question: "36. Dans la matrice BCG, les activités vedettes sont :",
+        answers: [
+          { text: "A. Les activités les plus rentables", correct: false },
+          { text: "B. Les DAS où la part de marché de l'entreprise est modeste", correct: false },
+          { text: "C. Les activités qui exigent des lourds investissements", correct: true }
+        ]
+      },
+      {
+        question: "37. Dans la matrice BCG, le taux de croissance de marché est déterminé à partir des :",
+        answers: [
+          { text: "A. Etudes du marché", correct: false },
+          { text: "B. Données statistiques officielles", correct: true },
+          { text: "C. Etudes faites par les concurrents", correct: false }
+        ]
+      },
+      {
+        question: "38. La matrice BCG est établie à partir des dimensions suivantes :",
+        answers: [
+          { text: "A. Taux de croissance et la part de marché relative", correct: true },
+          { text: "B. La compétitivité de l'entreprise et la croissance du marché", correct: false },
+          { text: "C. Attrait du marché et la position concurrentielle", correct: false }
+        ]
+      },
+      {
+        question: "39. L'analyse de la concurrence nécessite le recours au modèle de :",
+        answers: [
+          { text: "A. PESTEL", correct: false },
+          { text: "B. LCAG", correct: false },
+          { text: "C. M.PORTER", correct: true },
+          { text: "D. SWOT", correct: false }
+        ]
+      },
+      {
+        question: "40. L'analyse SWOT permet de déterminer :",
+        answers: [
+          { text: "A. Les concurrents indirects", correct: false },
+          { text: "B. Les concurrents directs", correct: false },
+          { text: "C. Les facteurs clés de succès des concurrents", correct: false },
+          { text: "D. Les compétences de l'entreprises", correct: true }
+        ]
+      },
+      {
+        question: "41. L'analyse SWOT permet de déterminer :",
+        answers: [
+          { text: "A. L'évolution globale du marché", correct: false },
+          { text: "B. Les capacités stratégiques de l'entreprise", correct: true },
+          { text: "C. Les facteurs clés de succès des concurrents", correct: false },
+          { text: "D. Les DAS de l'entreprises", correct: false }
+        ]
+      },
+      {
+        question: "42. Les clients appartenant à la majorité précoce sont ceux qui :",
+        answers: [
+          { text: "A. Adaptent la nouveauté suite au bouche à oreille", correct: false },
+          { text: "B. Choisissent la nouveauté pour le prestige", correct: false },
+          { text: "C. Aiment tout ce qui est nouveauté", correct: false },
+          { text: "D. Qui sont prudents face à la nouveauté", correct: true }
+        ]
+      },
+      {
+        question: "43. Les clients dits innovateurs sont ceux qui :",
+        answers: [
+          { text: "A. Choisissent la nouveauté pour le prestige", correct: false },
+          { text: "B. Adaptent la nouveauté suite au bouche à oreille", correct: false },
+          { text: "C. Qui aiment tout ce qui est nouveauté", correct: true },
+          { text: "D. Qui sont prudents face à la nouveauté", correct: false }
+        ]
+      },
+      {
+        question: "44. Le pouvoir de négociation des clients est :",
+        answers: [
+          { text: "A. Plus faible quand il n'existe pas de produits de substitution", correct: true },
+          { text: "B. Plus fort quand il existe de multiples produits de substitution", correct: true },
+          { text: "C. Plus faible lorsque l'intégration en aval est possible", correct: false },
+          { text: "D. Plus fort lorsque le marché est monopolistique", correct: false }
+        ]
+      },
+      {
+        question: "46. L'analyse de portefeuilles d'activités :",
+        answers: [
+          { text: "A. Est nécessaire pour les entreprises diversifiées", correct: true },
+          { text: "B. Identifie l'évolution des DAS de l'entreprise", correct: false },
+          { text: "C. Permet d'étudier la croissance du marché", correct: false },
+          { text: "D. Est utile pour faire la segmentation", correct: false }
+        ]
+      },
+      {
+        question: "47. L'analyse de portefeuilles d'activités :",
+        answers: [
+          { text: "A. nécessaire pour déterminer le positionnement", correct: false },
+          { text: "B. Identifie l'attractivité des marché cibles", correct: false },
+          { text: "C. Permet d'étudier la croissance du marché", correct: false },
+          { text: "D. Est utile pour les entreprises qui ont plusieurs DAS", correct: true }
+        ]
+      },
+      {
+        question: "48. Parmi les outils d'analyse de portefeuille d'activité, quelle est la matrice multicritères :",
+        answers: [
+          { text: "A. La matrice BCG", correct: false },
+          { text: "B. La matrice McKinsey", correct: false },
+          { text: "C. La matrice SWOT", correct: true },
+          { text: "D. La matrice d'ADL", correct: false }
+        ]
+      },
+      {
+        question: "49. Parmi les matrices de gestion de portefeuille d'activités, quelle est la matrice multicritère :",
+        answers: [
+          { text: "A. La matrice BCG", correct: false },
+          { text: "B. La matrice SWOT", correct: true },
+          { text: "C. La matrice McKinsey", correct: false }
+        ]
+      },
+      {
+        question: "51. Pour une entreprise, la chaine de valeur permet de :",
+        answers: [
+          { text: "A. Déterminer les activités Porteuses", correct: true },
+          { text: "B. Déterminer les activités attractives", correct: false },
+          { text: "C. Identifier les activités du marché", correct: false },
+          { text: "D. Identifier les activités des concurrents", correct: false }
+        ]
+      },
+      {
+        question: "53. Pour une entreprise, les DAS constituent :",
+        answers: [
+          { text: "A. Les activités principales", correct: false },
+          { text: "B. Les activités stratégiques", correct: true },
+          { text: "C. Les activités globales", correct: false },
+          { text: "D. Autre", correct: false }
+        ]
+      },
+      {
+        question: "54. Les DAS sont :",
+        answers: [
+          { text: "A. Le résultat de la segmentation stratégique", correct: true },
+          { text: "B. Le résultat de la segmentation marketing", correct: false },
+          { text: "C. Signe de la diversification des entreprises", correct: true }
+        ]
+      },
+      {
+        question: "55. Les cartes perceptuelles servent à :",
+        answers: [
+          { text: "A. Effectuer le ciblage pour l'entreprise", correct: false },
+          { text: "B. Promouvoir la marque d'une entreprise", correct: false },
+          { text: "C. Mesurer le positionnement de la marque", correct: true },
+          { text: "D. Identifier les concurrents directs", correct: false }
+        ]
+      },
+      {
+        question: "56. Les cartes perceptuelles servent à :",
+        answers: [
+          { text: "A. Stuter l'entreprise par rapport à la concurrence", correct: true },
+          { text: "B. Mesurer le positionnement de l'entreprise", correct: true },
+          { text: "C. Identifier l'avantage compétitif de l'entreprise", correct: false }
+        ]
+      },
+      {
+        question: "57. L'élaboration d'un plan d'action consiste à faire :",
+        answers: [
+          { text: "A. Un diagnostic interne", correct: false },
+          { text: "B. Un diagnostic externe", correct: false },
+          { text: "C. Un double diagnostic", correct: true },
+          { text: "D. Autre", correct: false }
+        ]
+      },
+      {
+        question: "58. Pour une entreprise, le macro-environnement est son :",
+        answers: [
+          { text: "A. Environnement spécifique", correct: false },
+          { text: "B. Environnement légal", correct: false },
+          { text: "C. Environnement général", correct: true }
+        ]
+      },
+      {
+        question: "59. Pour étudier le macro-environnement, on recourt à :",
+        answers: [
+          { text: "A. L'analyse SWOT", correct: false },
+          { text: "B. L'analyse PESTEL", correct: true },
+          { text: "C. L'analyse PORTER", correct: false }
+        ]
+      },
+      {
+        question: "60. Pour une entreprise, le micro-environnement est son :",
+        answers: [
+          { text: "A. Environnement spécifique", correct: true },
+          { text: "B. Environnement légal", correct: false },
+          { text: "C. Environnement général", correct: false }
+        ]
+      },
+      {
+        question: "61. Pour étudier le micro-environnement, on recourt à :",
+        answers: [
+          { text: "A. L'analyse BCG", correct: false },
+          { text: "B. L'analyse PESTEL", correct: false },
+          { text: "C. L'analyse PORTER", correct: true }
+        ]
+      },
+      {
+        question: "62. La détermination des FCS permet de :",
+        answers: [
+          { text: "A. Orienser la démarche marketing de l'entreprise", correct: false },
+          { text: "B. Identifier les avantages compétitifs de l'entreprise", correct: true },
+          { text: "C. Identifier les concurrents", correct: false }
+        ]
+      },
+      {
+        question: "63. Pour faire un diagnostic externe. L'entreprise procède par :",
+        answers: [
+          { text: "A. Un diagnostic interne", correct: false },
+          { text: "B. Une étude des compétences", correct: false },
+          { text: "C. Une étude de la concurrence", correct: true }
+        ]
+      },
+      {
+        question: "64. Le principal modele de M.Porter a ete elabore par :",
+        answers: [
+          { text: "A. L'analyse de marche", correct: false },
+          { text: "B. L'étude de l’avantage competitif", correct: true },
+          { text: "C. L'étude de forces de l’entreprise", correct: false }
+        ]
+      },
+      {
+        question: "66. Quels sont les Facteurs clés de succès de la marque Centrale DANONE :",
+        answers: [
+          { text: "A. La croissance du marché", correct: false },
+          { text: "B. La notoriété", correct: true },
+          { text: "C. La structure du marché concurrentiel", correct: false }
+        ]
+      },
+      {
+        question: "67. La marque Centrale Danone est le 1er producteur marocain de lait conditionné et de produits laitiers frais.L'activité du groupe s'organise essentiellement autour de 3 familles de produits : le lait marque Centrale, le lait infantile marque Danone Lait de Croissance et les produits laitiers frais yaourts (marques Danone,Activia, Danette, Danino, Moufid, Danup et Raibi Jamila) et fromages (Coeur de Lait et Jebli).; quelle est la politique de ciblage de l’entreprise centrale DANONE est: ",
+        answers: [
+          { text: "A. Indifférencié", correct: false },
+          { text: "B. Différencié", correct: true },
+          { text: "C. Concentré", correct: false }
+        ]
+      },
+      {
+        question: "68. Dans le secteur de télécoms au Maroc, laquelle des entreprises est en position de challenger :",
+        answers: [
+          { text: "A. tissalat Al Maghreb", correct: false },
+          { text: "B. Orange", correct: true },
+          { text: "C. inwi", correct: false },
+          { text: "D. Autre", correct: false }
+        ]
+      },
+      {
+        question: "69. La strategie de ciblage de la marque ADIDAS est :",
+        answers: [
+          { text: "A. Différencié", correct: true },
+          { text: "B. Concentré", correct: false },
+          { text: "C. Indifférencié", correct: false }
+        ]
+      },
+      {
+        question: "70. Pour la marque ADIDAS, les produits de la concurrence indirecte sont :",
+        answers: [
+          { text: "A. Importants", correct: true },
+          { text: "B. Peu importants", correct: false },
+          { text: "C. Négligeables", correct: false }
+        ]
+      },
+      {
+        question: "71. Pour la marque ADIDAS, les accessoires de sport sont des activités :",
+        answers: [
+          { text: "A. vedettes", correct: false },
+          { text: "B. vaches à lait", correct: false },
+          { text: "C. Dilenmes", correct: false },
+          { text: "D. Points morts", correct: true }
+        ]
+      },
+      {
+        question: "72. La marque ADIDAS, équipementier sportif européen de renommé, offre une large gamme de produits :Chaussures, vêtements de sport, équipements sportif,accessoires (lunettes de soleil, chapeaux...); Quels sont les produits Dilemmes de la marque ADIDAS :",
+        answers: [
+          { text: "A. Les chaussures", correct: false },
+          { text: "B. Les vêtements de sport", correct: false },
+          { text: "C. Les équipements sportifs", correct: true }
+        ]
+      },
+      {
+        question: "73. Quels sont les produits vache à lait de la marque ADIDAS :",
+        answers: [
+          { text: "A. Les chaussures", correct: false },
+          { text: "B. Les vêtements de sport", correct: true },
+          { text: "C. Les équipements sportifs", correct: false }
+        ]
+      },
+      {
+        question: "74. Quels sont les Facteurs clés de succès de la marque ADIDAS :",
+        answers: [
+          { text: "A. La croissance du marché de sport", correct: false },
+          { text: "B. L'innovation", correct: true },
+          { text: "C. La structure du marché concurrentiel", correct: false }
+        ]
+      },
+      {
+    question: "75. Par rapport à la macro-segmentation, la micro-segmentation:",
+    answers: [
+      { text: "A. Identifie les DAS de l'entreprise", correct: false },
+      { text: "B. Identifie des segments à l'intérieur de la première", correct: true },
+      { text: "C. Identifie des consommateurs cibles", correct: false },
+      { text: "D. Identifie des produits marchés", correct: false }
+    ]
+  },
+  {
+    question: "76. Les critères de la segmentation comportementales:",
+    answers: [
+      { text: "A. Attitudes", correct: false },
+      { text: "B. Pouvoir d'achat client", correct: false },
+      { text: "C. Fidélité", correct: true },
+      { text: "D. Système de valeur client", correct: false }
+    ]
+  },
+  {
+    question: "77. Le marketing stratégique recouvre:",
+    answers: [
+      { text: "A. Le choix des produits stratégiques", correct: false },
+      { text: "B. Le choix du positionnement de la marque", correct: true },
+      { text: "C. Les stratégies innovatrices de l'entreprise", correct: false },
+      { text: "D. La stratégie concurrentielle de l'entreprise", correct: false }
+    ]
+  },
+  {
+    question: "78. Pour l'entreprise, l'analyse de l'environnement compétitif permet de",
+    answers: [
+      { text: "A. Déterminer les opportunités et menaces", correct: true },
+      { text: "B. Positionner les Domaines d'Activités Stratégiques", correct: false },
+      { text: "C. Identifier les forces et faiblesses", correct: false },
+      { text: "D. Positionner les compétences de l'entreprises", correct: false }
+    ]
+  },
+  {
+    question: "79. Le marketing stratégique et opérationnel sont:",
+    answers: [
+      { text: "A. Deux démarches indépendantes", correct: false },
+      { text: "B. Deux démarches complémentaires", correct: true },
+      { text: "C. Nécessaire pour vaincre la concurrence", correct: false },
+      { text: "D. La base du plan d'action d'une entrepris", correct: false }
+    ]
+  },
+  {
+    question: "80. Pour une entreprise, la chaîne de valeur de:",
+    answers: [
+      { text: "A. Déterminer les activités stratégiques", correct: false },
+      { text: "B. Déterminer les activités attractives", correct: false },
+      { text: "C. Identifier les compétences", correct: true },
+      { text: "D. Identifier les concurrents", correct: false }
+    ]
+  },
+  {
+    question: "81. La matrice MC KINSEY est la matrice :",
+    answers: [
+      { text: "A. croissance de marché attractivité", correct: true },
+      { text: "B. croissance de marché- part du marché", correct: false },
+      { text: "C. Attrait de marché- position concurrentielle", correct: false },
+      { text: "D. Croissance de marché-position concurrentielle", correct: false }
+    ]
+  },
+  {
+    question: "82. Une entreprise qui n'est pas leader sur son marché et qui cherche à accroître sa part est appelée:",
+    answers: [
+      { text: "A. Le suiveur", correct: false },
+      { text: "B. Le spécialiste", correct: false },
+      { text: "C. Le challenger", correct: true },
+      { text: "D. Le partenaire", correct: false }
+    ]
+  },
+  {
+    question: "83. Les cartes perceptuelles servent à :",
+    answers: [
+      { text: "A. Effectuer le ciblage pour l'entreprise", correct: false },
+      { text: "B. Promouvoir la marque d'une entreprise", correct: false },
+      { text: "C. Mesurer le positionnement de la marque", correct: true },
+      { text: "D. Identifier les concurrents directs", correct: false }
+    ]
+  },
+  {
+    question: "84. Le modèle PSETEL sert à analyser :",
+    answers: [
+      { text: "A. Le micro-environnement", correct: false },
+      { text: "B. Le micro et le macro-environnement", correct: false },
+      { text: "C. L'environnement global", correct: true },
+      { text: "D. L'environnement concurrentiel", correct: false }
+    ]
+  },
+  {
+    question: "85. Le positionnement permet à l'entreprise de:",
+    answers: [
+      { text: "A. Vaincre la concurrence", correct: false },
+      { text: "B. Bâtir une image sur le marché", correct: true },
+      { text: "C. Cibler une niche", correct: false },
+      { text: "D. Agrandir sa part de marché", correct: false }
+    ]
+  },
+  {
+    question: "86. Les stratégies défensive se basent sur (chercher l'intrus):",
+    answers: [
+      { text: "A. Promotion", correct: false },
+      { text: "B. Prix", correct: true },
+      { text: "C. Produit", correct: false },
+      { text: "D. Distribution", correct: false }
+    ]
+  },
+  {
+    question: "87. Le pouvoir de négociation des fournisseurs est:",
+    answers: [
+      { text: "A. Plus faible quand il n'existe pas de produits de substitution", correct: false },
+      { text: "B. Plus fort quand il existe de multiples produits de substitution", correct: false },
+      { text: "C. Plus fort lorsque l'intégration en aval est possible", correct: false },
+      { text: "D. Plus fort lorsque le marché est monopolistique", correct: true }
+    ]
+  },
+  {
+    question: "88. L'analyse de l'environnement recourt à (chercher l'intrus):",
+    answers: [
+      { text: "A. L'analyse des cinq forces", correct: false },
+      { text: "B. L'analyse de portefeuilles d'activités", correct: true },
+      { text: "C. L'analyse SWOT", correct: false },
+      { text: "D. L'analyse PESTEL", correct: false }
+    ]
+  },
+  {
+    question: "89. Le plan d'action stratégique est un plan:",
+    answers: [
+      { text: "A. Qui concerne le court terme", correct: false },
+      { text: "B. Consacré à la phase opérationnelle", correct: false },
+      { text: "C. Qui reflète les orientations à long terme de l'entreprise", correct: true },
+      { text: "D. Qui reflète la stratégie de l'entreprise vis-à-vis de la concurrence", correct: false }
+    ]
+  },
+  {
+    question: "90. Les facteurs clés de succès sont",
+    answers: [
+      { text: "A. Facteurs de la concurrence", correct: false },
+      { text: "B. Facteurs du macro-environnement", correct: false },
+      { text: "C. Facteurs qui peuvent influencer la concurrence", correct: false },
+      { text: "D. Facteurs maîtrisés par l'entreprise mieux que la concurrence", correct: true }
+    ]
+  },
+  {
+    question: "91. L'analyse concurrentielle de Porter",
+    answers: [
+      { text: "A. Est l'analyse des cinq forces", correct: true },
+      { text: "B. Est une analyse interne et externe", correct: false },
+      { text: "C. Est similaire à l'analyse SWOT", correct: false },
+      { text: "D. Est une analyse du macro-environnement", correct: false }
+    ]
+  },
+  {
+    question: "92. Pour l'entreprise, l'analyse de l'environnement compétitif permet de:",
+    answers: [
+      { text: "A. Déterminer la capacité stratégique", correct: false },
+      { text: "B. Positionner les Domaines d'Activités Stratégiques", correct: false },
+      { text: "C. Détecter les forces et faiblesses", correct: false },
+      { text: "D. Détecter les opportunités et menaces", correct: true }
+    ]
+  },
+  {
+    question: "93. Le marketing stratégique désigne:",
+    answers: [
+      { text: "A. L'ensemble des tactiques pour servir la stratégie", correct: false },
+      { text: "B. Les orientations générales de l'entreprise", correct: true },
+      { text: "C. Promouvoir l'innovation dans l'entreprise", correct: false },
+      { text: "D. Veiller au bon déroulement du processus de production", correct: false }
+    ]
+  },
+  {
+    question: "94. Dans la matrice BCG, les produits vedettes sont",
+    answers: [
+      { text: "A. Les activités les plus rentables à court terme", correct: false },
+      { text: "B. Les DAS où le marché est en croissance moyenne", correct: false },
+      { text: "C. Les activités qui exigent des lourds investissements", correct: true },
+      { text: "D. Les activités où la part de marché relative est faible", correct: false }
+    ]
+  },
+  {
+    question: "95. L'analyse de portefeuilles d'activités",
+    answers: [
+      { text: "A. Est nécessaire pour déterminer la part relative de marché", correct: false },
+      { text: "B. N'est valable que pour les entreprises diversifiées", correct: true },
+      { text: "C. permet d'étudier la croissance du marché", correct: false },
+      { text: "D. Agit sur l'attractivité des marché cibles", correct: false }
+    ]
+  },
+  {
+    question: "96. La matrice Boston Consulting Group est la",
+    answers: [
+      { text: "A. Matrice croissance-attractivité", correct: false },
+      { text: "B. Matrice croissance-part du marché", correct: true },
+      { text: "C. Matrice attractivité-compétitivité", correct: false },
+      { text: "D. Matrice croissance-compétitivité", correct: false }
+    ]
+  },
+  {
+    question: "97. Par rapport la segmentation marketing, la segmentation stratégique:",
+    answers: [
+      { text: "A. La segmentation stratégique est une partie de la segmentation marketing", correct: false },
+      { text: "B. La segmentation stratégique provoque des changements sur le court terme", correct: false },
+      { text: "C. La segmentation stratégique permet d'adapter les produits aux consommateurs", correct: false },
+      { text: "D. La segmentation stratégique concerne l'ensemble des activités de l'entreprise", correct: true }
+    ]
+  },
+  {
+    question: "98. La matrice Mc Kinsey est",
+    answers: [
+      { text: "A. Matrice attractivité-compétitivité", correct: true },
+      { text: "B. Matrice croissance-compétitivité", correct: false },
+      { text: "C. Matrice part de marché-croissance", correct: false },
+      { text: "D. Matrice croissance-attractivité", correct: false }
+    ]
+  },
+  {
+    question: "99. La stratégie d'intégration horizontale sert à:",
+    answers: [
+      { text: "A. Protéger une source d'approvisionnement stratégique", correct: false },
+      { text: "B. Protéger le marché concurrentiel", correct: false },
+      { text: "C. Contrôler le circuit de distribution", correct: false },
+      { text: "D. Diversifier le marché", correct: true }
+    ]
+  },
+  {
+    question: "100. Le triangle d'or du positionnement est constitué des éléments suivants:",
+    answers: [
+      { text: "A. Marché, marque, entreprise", correct: false },
+      { text: "B. Marché, produit, concurrence", correct: true },
+      { text: "C. Consommateur, environnement, performance", correct: false },
+      { text: "D. Stratégie, client, marché", correct: false }
+    ]
+  },
+  {
+    question: "101. Le modèle PSETEL sert à analyser:",
+    answers: [
+      { text: "A. Le micro-environnement", correct: false },
+      { text: "B. Le micro et le macro-environnement", correct: false },
+      { text: "C. L'environnement global", correct: true },
+      { text: "D. L'environnement culture", correct: false }
+    ]
+  }
+];
+    
+
+      // Configuration
+    const questionsPerPage = 20;
+    let currentPage = 0;
+    const totalPages = Math.ceil(allQuestions.length / questionsPerPage);
+
+    // DOM Elements
+    const qcmForm = document.getElementById('qcm-form');
+    const pagination = document.getElementById('pagination');
+    const questionsContainer = document.getElementById('questions-container');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const submitBtn = document.getElementById('submit-btn');
+    const shareBtn = document.getElementById('share-btn');
+    const resultDisplay = document.getElementById('result');
+    const progressBar = document.getElementById('progress-bar');
+
+    // Initialize the app
+    function init() {
+      createQuestionContainers();
+      createPagination();
+      showPage(0);
+      updateNavButtons();
+      setupEventListeners();
+    }
+
+    // Create containers for each page
+    function createQuestionContainers() {
+      for (let i = 0; i < totalPages; i++) {
+        const container = document.createElement('div');
+        container.className = 'question-container';
+        container.id = `page-${i}`;
+        questionsContainer.appendChild(container);
+      }
+    }
+
+    // Create pagination buttons
+    function createPagination() {
+      for (let i = 0; i < totalPages; i++) {
+        const pageBtn = document.createElement('button');
+        pageBtn.className = 'page-btn';
+        pageBtn.textContent = i + 1;
+        pageBtn.dataset.page = i;
+        pageBtn.addEventListener('click', () => showPage(i));
+        pagination.appendChild(pageBtn);
+      }
+    }
+
+    // Show a specific page
+    function showPage(page) {
+      currentPage = page;
+      
+      // Hide all pages
+      document.querySelectorAll('.question-container').forEach(container => {
+        container.classList.remove('active');
+      });
+      
+      // Show current page
+      document.getElementById(`page-${page}`).classList.add('active');
+      
+      // Update pagination buttons
+      updatePaginationButtons();
+      updateNavButtons();
+      
+      // Generate questions for this page if not already done
+      const start = page * questionsPerPage;
+      const end = Math.min(start + questionsPerPage, allQuestions.length);
+      const container = document.getElementById(`page-${page}`);
+      
+      if (container.children.length === 0) {
+        for (let i = start; i < end; i++) {
+          const question = allQuestions[i];
+          const questionDiv = document.createElement('div');
+          questionDiv.className = 'question';
+          questionDiv.dataset.index = i;
+          
+          const questionTitle = document.createElement('h3');
+          questionTitle.textContent = question.question;
+          questionDiv.appendChild(questionTitle);
+          
+          question.answers.forEach((answer, j) => {
+            const label = document.createElement('label');
+            const input = document.createElement('input');
+            input.type = 'checkbox';
+            input.name = `q${i+1}`;
+            input.value = String.fromCharCode(65 + j); // A, B, C, etc.
+            
+            label.appendChild(input);
+            label.appendChild(document.createTextNode(' ' + answer.text));
+            questionDiv.appendChild(label);
+          });
+          
+          container.appendChild(questionDiv);
+        }
+      }
+      
+      // Reset page result
+      resultDisplay.textContent = '';
+    }
+
+    // Update pagination buttons
+    function updatePaginationButtons() {
+      document.querySelectorAll('.page-btn').forEach((btn, i) => {
+        if (i === currentPage) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    // Update navigation buttons
+    function updateNavButtons() {
+      prevBtn.disabled = currentPage === 0;
+      nextBtn.disabled = currentPage === totalPages - 1;
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      prevBtn.addEventListener('click', () => {
+        if (currentPage > 0) showPage(currentPage - 1);
+      });
+      
+      nextBtn.addEventListener('click', () => {
+        if (currentPage < totalPages - 1) showPage(currentPage + 1);
+      });
+      
+      submitBtn.addEventListener('click', submitCurrentPage);
+      shareBtn.addEventListener('click', shareQuiz);
+    }
+
+    // Submit current page
+    function submitCurrentPage() {
+  const start = currentPage * questionsPerPage;
+  const end = Math.min(start + questionsPerPage, allQuestions.length);
+  let pageScore = 0;
+  let totalPageQuestions = end - start;
+
+  for (let i = start; i < end; i++) {
+    const question = allQuestions[i];
+    const questionDiv = document.querySelector(`.question[data-index="${i}"]`);
+    if (!questionDiv) continue;
+    
+    const selected = Array.from(questionDiv.querySelectorAll('input:checked')).map(input => input.value);
+    const correctAnswers = question.answers
+      .map((answer, j) => answer.correct ? String.fromCharCode(65 + j) : null)
+      .filter(val => val !== null);
+    
+    // Reset classes
+    const labels = questionDiv.querySelectorAll('label');
+    labels.forEach(label => {
+      label.classList.remove('correct', 'incorrect', 'missing');
+    });
+
+    let correctSelected = 0;
+    let hasIncorrect = false;
+
+    // Check selected answers
+    selected.forEach(selectedAnswer => {
+      const answerIndex = selectedAnswer.charCodeAt(0) - 65;
+      const label = labels[answerIndex];
+      
+      if (question.answers[answerIndex].correct) {
+        label.classList.add('correct');
+        correctSelected++;
+      } else {
+        label.classList.add('incorrect');
+        hasIncorrect = true;
+      }
+    });
+
+    // Highlight missing correct answers
+    correctAnswers.forEach(correctAnswer => {
+      if (!selected.includes(correctAnswer)) {
+        const answerIndex = correctAnswer.charCodeAt(0) - 65;
+        labels[answerIndex].classList.add('missing');
+      }
+    });
+
+    // Only count if ALL correct answers are selected AND NO incorrect ones
+    if (correctSelected === correctAnswers.length && !hasIncorrect) {
+      pageScore++;
+    }
+  }
+
+      // Display results
+      const percentage = (pageScore / totalPageQuestions) * 100;
+      progressBar.style.width = `${percentage}%`;
+      
+      resultDisplay.textContent = `Résultats: ${pageScore}/${totalPageQuestions} (${Math.round(percentage)}%)`;
+      resultDisplay.style.color = percentage >= 70 ? '#28a745' : percentage >= 50 ? '#ffc107' : '#dc3545';
+    }
+
+    // Share function
+    function shareQuiz() {
+      const url = window.location.href;
+      
+      if (navigator.share) {
+        navigator.share({
+          title: 'QCM Marketing Stratégique',
+          text: 'Testez vos connaissances avec ce questionnaire!',
+          url: url
+        }).catch(err => {
+          console.log('Erreur de partage:', err);
+          fallbackShare();
+        });
+      } else {
+        fallbackShare();
+      }
+    }
+
+    // Fallback share method
+    function fallbackShare() {
+      const url = window.location.href;
+      navigator.clipboard.writeText(url).then(() => {
+        alert('Lien copié dans le presse-papiers !\n\nCollez-le pour partager.');
+      }).catch(() => {
+        prompt('Copiez ce lien pour partager:', url);
+      });
+    }
+
+    // Start the app
+    init();
+  </script>
+
+  <p class="validi">D3iw m3aya nvalidi 😁</p>
+
+  <!-- Add this in <head> -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<!-- Footer -->
+<footer style="text-align: center; margin-top: 2rem; padding: 1.5rem; background: #f8f9fa; border-top: 1px solid #eee;">
+  <!-- Instagram Icon -->
+  <a href="https://www.instagram.com/a_5ldn?igsh=MWx4d2dyYjhiNnBhbw==" target="_blank" style="margin: 0 15px; color: #E1306C; font-size: 1.5rem;">
+    <i class="fab fa-instagram"></i>
+  </a>
+  
+  <!-- Contact Button -->
+  <a href="mailto:ali.khaldoun03@gmail.com" style="margin: 0 15px; text-decoration: none;">
+    <button style="background: #3498db; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer;">
+      <i class="fas fa-envelope"></i> Contact Me
+    </button>
+  </a>
+  
+  <!-- Copyright Text -->
+  <p style="margin: 15px 0 0 0; color: #666; font-size: 0.9rem;">
+    Copyright ©2025 Designed by Ali hihihi
+  </p>
+</footer>
+
+</body>
+</html>
